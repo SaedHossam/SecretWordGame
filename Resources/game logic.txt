@@ -1,0 +1,54 @@
+Server side:-
+1- Start server
+2- load data(categories, Difficulties)
+3- Play()server and client agree
+4- load word(select categor, diff)
+5- Draw n lines
+6- listen() clicked button
+7- check
+8- if true expose char(s) , notify exposed chars
+9- chech if finish()
+10- Win, notify client 
+11- else go to 6
+12- if wrong => notify client
+13- freeze
+14- client play
+15- if(exposed chars == 0) lose
+16- else defreeze
+17- go to 6
+18- win or lose message
+19- play again?
+20- if yes
+21- update score
+22- go to 3
+23- else save score to file
+24- go to 1
+
+*****************************************
+
+Client:-
+1- connect to server
+2- Play()server and client agree
+3- show Avalible game
+4- if ok
+5- load word
+6- Draw n lines
+7- Server Play
+8- freeze
+9- listen() for notifications and exposed chars
+10- if(exposed chars == 0) lose
+11- else 
+12- listen() clicked button
+13- check
+14- if true expose char(s), notify exposed chars
+15- chech if finish()
+16- Win, notify server
+17- else go to 12
+18- if wrong => notify server
+19- go to 8
+20- win or lose message
+21- play again?
+22- if yes
+23- update score
+24- go to 5
+25- go to 1
