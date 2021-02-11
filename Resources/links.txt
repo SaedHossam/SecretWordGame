@@ -1,0 +1,16 @@
+games:
+    https://thewordsearch.com/hangman/
+    https://www.gamestolearnenglish.com/hangman/
+    https://hangmanwordgame.com/?fca=1&success=0#/
+
+wordlist:
+    https://www.enchantedlearning.com/wordlist/
+    https://www.thegamegal.com/printables/
+    http://www.english-for-students.com/Words-by-Theme.html
+hard    https://www.hangmanwords.com/words
+    https://grammar.yourdictionary.com/games-puzzles-and-worksheets/charades-word-lists-kids.html
+    https://www.flocabulary.com/wordlists/
+    https://taralazar.com/2014/06/09/list-of-200-fun-cool-and-interesting-words/
+
+TCP Games:-
+https://16bpp.net/tutorials/csharp-networking/04a/
