@@ -106,7 +106,9 @@ namespace SecretWordGameClient
 
         public void StartGame()
         {
-            gamePlay.Show();
+            this.Hide();
+            gamePlay.ShowDialog();
+            this.Show();
         }
 
 

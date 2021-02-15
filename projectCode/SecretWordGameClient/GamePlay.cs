@@ -57,20 +57,24 @@ namespace SecretWordGameClient
 
             connectedTcpClient = client;
 
-            secretWord = "elephant";
-            myturn = false;
-
             pressedKeys = new List<char>();
 
             listBox1.DataSource = pressedKeys;
 
-            DrawWord();
             DrawKeyBoard();
+
+
+
             //Task.Run(() => Run());
         }
 
         private void DrawWord()
         {
+            if (this.Controls["lettersPanel"] != null)
+            {
+                this.Controls.Remove(this.Controls["lettersPanel"]);
+            }
+
             FlowLayoutPanel panel = new FlowLayoutPanel();
             panel.Name = "lettersPanel";
 
@@ -130,6 +134,14 @@ namespace SecretWordGameClient
             while (true)
             {
                 reply = Receive();
+
+                if (!SocketConnected())
+                {
+                    connectedTcpClient.Close();
+                    break;
+                }
+
+
                 if (Guess(reply[0]))
                 {
                     if (checkFinshed())
@@ -233,7 +245,7 @@ namespace SecretWordGameClient
                     {
                         (this.Controls["lettersPanel"].Controls[index] as Label).Text = letter.ToString();
                     });
-                    
+
                     index = secretWord.ToUpper().IndexOf(letter, index + 1);
                 }
 
@@ -269,7 +281,31 @@ namespace SecretWordGameClient
                 MessageBox.Show("GG");
             }
 
-            MessageBox.Show("new game");
+            DialogResult result = MessageBox.Show("new game", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
+            {
+                NewGame();
+            }
+            else
+            {
+                // Close this window
+            }
+        }
+
+        private void NewGame()
+        {
+            secretWord = "elephant"; // from server
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                DrawWord();
+            });
+
+            myturn = false;
+
+            pressedKeys.Clear();
+            EnableKeyBoard(false);
+            Task.Run(() => ReceiveLetters());
         }
 
         private void EnableKeyBoard(bool enable)
@@ -306,8 +342,7 @@ namespace SecretWordGameClient
             simpleSound.SoundLocation = @"./489035__michael-db__game-music-01.wav";
             //simpleSound.PlayLooping();
 
-            EnableKeyBoard(false);
-            Task.Run(() => ReceiveLetters());
+            NewGame();
         }
 
         private void btnStopSound_Click(object sender, EventArgs e)
@@ -318,6 +353,45 @@ namespace SecretWordGameClient
         private void GamePlay_FormClosing(object sender, FormClosingEventArgs e)
         {
             simpleSound.Stop();
+
+
+            var result = MessageBox.Show("Are you sure ?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (result == DialogResult.Yes)
+            {
+                connectedTcpClient.Close();
+            }
+            else
+            {
+                e.Cancel = true;
+            }
+        }
+
+        bool SocketConnected() //check whether client is connected server
+        {
+            bool flag = false;
+            try
+            {
+                bool part1 = connectedTcpClient.Client.Poll(10, SelectMode.SelectRead);
+                bool part2 = (connectedTcpClient.Available == 0);
+                if (part1 && part2)
+                {
+                    //this.Invoke((MethodInvoker)delegate // cross threads
+                    //{
+                    //    btnConnect.Enabled = true;
+                    //    txtUserName.ReadOnly = false;
+                    //});
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                }
+            }
+            catch (Exception er)
+            {
+                Console.WriteLine(er);
+            }
+            return flag;
         }
     }
 }

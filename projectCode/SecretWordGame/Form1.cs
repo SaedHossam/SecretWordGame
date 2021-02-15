@@ -141,7 +141,7 @@ namespace SecretWordGame
                 if (result == DialogResult.Yes)
                 {
                     Send("start");
-                    gamePlay = new GamePlay(connectedTcpClient) { Difficulty = this.Difficulty, Category = this.Category };
+                    gamePlay = new GamePlay(connectedTcpClient, this) { Difficulty = this.Difficulty, Category = this.Category };
                 }
                 else
                 {
@@ -167,7 +167,10 @@ namespace SecretWordGame
 
         public void StartGame()
         {
-            gamePlay.Show();
+            this.Hide();
+            gamePlay.ShowDialog();
+            this.Show();
+            
         }
 
         private void btnOptions_Click(object sender, EventArgs e)
