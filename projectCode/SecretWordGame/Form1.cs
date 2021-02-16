@@ -19,21 +19,8 @@ namespace SecretWordGame
         private string _difficulty;
         private string _category;
 
-        SoundPlayer simpleSound;
-
         GamePlay gamePlay;
-
-        // TCPListener to listen for incomming TCP connection requests.
-        TcpListener tcpListener;
-
-        // Create handle to connected tcp client.
-        TcpClient connectedTcpClient;
-
-        CancellationTokenSource source;
-        CancellationToken token;
-
-        IPAddress iP;
-        int port;
+        Network network;
 
         public string Difficulty
         {
@@ -68,185 +55,72 @@ namespace SecretWordGame
             Difficulty = "Medium";
             Category = "Animals";
 
-            simpleSound = new SoundPlayer();
+            IPAddress ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
+            int port = 2000;
 
-            iP = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            port = 2000;
-
-            // Create listener using ip and port 			
-            tcpListener = new TcpListener(iP, port);
+            network = new Network(ip, port);
+            network.ServerStarted += Network_ServerStarted;
+            network.ServerStoped += Network_ServerStoped;
+            network.GameStarted += Network_GameStarted;
+            network.ClientConnected += Network_ClientConnected;
+            network.ClientDisconnected += Network_ClientDisconnected;
         }
 
-        // Use this for initialization
-        public async Task Start()
+        private void Network_ServerStarted(object sender, EventArgs e)
         {
-            connectedTcpClient = null;
-            source = new CancellationTokenSource();
-            token = source.Token;
-
-            // TcpServer task
-            await Task.Run(() => ListenForIncommingRequest(), token);
-            if (connectedTcpClient != null)
-            {
-                await Task.Run(() => AskForStart());
-            }
-            if (gamePlay != null)
-            {
-                this.StartGame();
-            }
+            btnStart.Enabled = false;
+            btnStop.Enabled = true;
         }
 
-        // Handles incomming TcpClient request 	
-        private void ListenForIncommingRequest()
-        {
-            try
-            {
-                tcpListener.Start();
-
-                Byte[] bytes = new Byte[1024];
-                while (tcpListener.Server.IsBound && connectedTcpClient == null && !token.IsCancellationRequested)
-                {
-                    if (tcpListener.Pending())
-                    {
-                        connectedTcpClient = tcpListener.AcceptTcpClient();
-                    }
-                    else
-                    {
-                        Thread.Sleep(100);
-                    }
-                }
-            }
-            catch (SocketException socketException)
-            {
-                MessageBox.Show("SocketException " + socketException.ToString());
-            }
-            finally
-            {
-                if (connectedTcpClient == null)
-                {
-                    tcpListener.Stop();
-                }
-            }
-        }
-
-        private void AskForStart()
-        {
-            string reply;
-            Send($"askStart,Play a game with difficulty {Difficulty} and category {Category}?");
-
-            reply = Receive();
-            if (reply == "Yes")
-            {
-                var result = MessageBox.Show("Client Connected, start game?", "Game start", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
-                {
-                    Send("start");
-                    gamePlay = new GamePlay(connectedTcpClient, this) { Difficulty = this.Difficulty, Category = this.Category };
-                }
-                else
-                {
-                    this.StopServer();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Client refused to play");
-                this.StopServer();
-            }
-        }
-
-        public void StopServer()
+        private void Network_ServerStoped(object sender, EventArgs e)
         {
             this.Invoke((MethodInvoker)delegate ()
             {
                 btnStart.Enabled = true;
+                btnStop.Enabled = false;
             });
-
-            source.Cancel();
         }
 
-        public void StartGame()
+        private void Network_ClientConnected(object sender, EventArgs e)
         {
-            this.Hide();
-            gamePlay.ShowDialog();
-            this.Show();
-            
+            //MessageBox.Show("Client Connected");
+
+            network.Send("askStart", $"Do tou want to play a game with difficulty {Difficulty} and category {Category}?");
         }
 
-        private void btnOptions_Click(object sender, EventArgs e)
+        private void Network_ClientDisconnected(object sender, EventArgs e)
         {
-            OptionsDialog dialog = new OptionsDialog(Difficulty, Category);
-            dialog.ShowDialog();
+            MessageBox.Show("Client Disconnected");
+        }
 
-            if (dialog.DialogResult == DialogResult.OK)
+        private void Network_GameStarted(object sender, EventArgs e)
+        {
+            gamePlay = new GamePlay(network) { Difficulty = this.Difficulty, Category = this.Category };
+            network.Send("runGame");
+            this.Invoke((MethodInvoker)delegate ()
             {
-                Difficulty = dialog.Difficulty;
-                Category = dialog.Category;
-            }
-        }
-
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            // stop server and close any used resource
-
-            this.Close();
+                gamePlay.Show();
+            });
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            //simpleSound.Stop();
-            //GamePlay game = new GamePlay() { Difficulty = this.Difficulty , Category = this.Category};
-            //game.Show();
-
-            OptionsDialog dialog = new OptionsDialog(Difficulty, Category);
-            dialog.ShowDialog();
-
-            if (dialog.DialogResult == DialogResult.OK)
-            {
-                Difficulty = dialog.Difficulty;
-                Category = dialog.Category;
-
-                this.Start();
-                btnStart.Enabled = false;
-            }
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            simpleSound.SoundLocation = @"./414046__tyops__fantasy-gaming-intro.wav";
-            //simpleSound.PlayLooping();
-        }
-
-        private void btnStopSound_Click_1(object sender, EventArgs e)
-        {
-            simpleSound.Stop();
+            network.Start();
         }
 
         private void btnStop_Click(object sender, EventArgs e)
         {
-            StopServer();
+            network.Stop();
         }
 
-        public void Send(string message)
+        private void btnExit_Click(object sender, EventArgs e)
         {
-            // Convert string message to byte array.                 
-            byte[] MessageAsByteArray = Encoding.ASCII.GetBytes(message);
-            // Write byte array to socketConnection stream.               
-            connectedTcpClient.Client.Send(MessageAsByteArray);
+            this.Close();
         }
 
-        public string Receive()
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Byte[] bytes = new Byte[1024];
-            int length;
-
-            length = connectedTcpClient.Client.Receive(bytes);
-            // Get a stream object for reading 				
-            var incommingData = new byte[length];
-            Array.Copy(bytes, 0, incommingData, 0, length);
-            // Convert byte array to string message. 						
-            return Encoding.ASCII.GetString(incommingData);
+            network.Stop();
         }
     }
 }

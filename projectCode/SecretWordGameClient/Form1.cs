@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,112 +15,70 @@ namespace SecretWordGameClient
 {
     public partial class Form1 : Form
     {
-        IPAddress iP;
-        int port;
-
-        private TcpClient socketConnection;
         GamePlay gamePlay;
+        Network network;
 
         public Form1()
         {
             InitializeComponent();
 
-            iP = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            port = 2000;
-
+            network = new Network();
+            network.Connected += Network_Connected;
+            network.Disconnected += Network_Disconnected;
+            network.GameStarted += Network_GameStarted;
         }
 
-        // Use this for initialization,	Setup socket connection. 	
-        public void Start()
+        private void Network_GameStarted(object sender, EventArgs e)
         {
-            try
+            gamePlay = new GamePlay(network);
+
+            if (this.InvokeRequired)
             {
-                socketConnection = new TcpClient("localhost", port);
-
-                Task.Run(() => ListenForData()).Wait();
-
-                if (gamePlay != null)
+                this.Invoke((MethodInvoker)delegate ()
                 {
-                    this.StartGame();
-                }
+                    gamePlay.Show();
+                });
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show("Server not started");
+                gamePlay.Show();
             }
+
         }
 
-        // Runs in background clientReceiveThread; Listens for incomming data. 	
-        private void ListenForData()
+        private void Network_Disconnected(object sender, EventArgs e)
         {
-            try
+            this.Invoke((MethodInvoker)delegate ()
             {
-                while (socketConnection.Connected)
-                {
-                    string serverMessage = Receive();
-                    string[] command = serverMessage.Split(',');
-                    switch (command[0])
-                    {
-                        case ("askStart"):
-                            var result = MessageBox.Show(command[1], command[0], MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                            Send(result.ToString());
-                            break;
-                        case ("start"):
-                            gamePlay = new GamePlay(socketConnection) { Difficulty = "", Category = "" };
-                            return;
-                            break;
-                    }
-                }
+                btnPlay.Enabled = true;
+            });
+        }
 
-                MessageBox.Show("Server closed");
-            }
-            catch (SocketException socketException)
+        private void Network_Connected(object sender, EventArgs e)
+        {
+            //MessageBox.Show("Connected to server");
+            this.Invoke((MethodInvoker)delegate ()
             {
-                //   MessageBox.Show("Socket exception: " + socketException);
-                if (!socketConnection.Connected)
-                {
-                    MessageBox.Show("Server Colsed");
-                }
-            }
+                btnPlay.Enabled = false;
+            });
         }
-
-        private void Send(string message)
-        {
-            // Convert string message to byte array.                 
-            byte[] MessageAsByteArray = Encoding.ASCII.GetBytes(message);
-            // Write byte array to socketConnection stream.               
-            socketConnection.Client.Send(MessageAsByteArray);
-        }
-
-        private string Receive()
-        {
-            Byte[] bytes = new Byte[1024];
-            int length;
-
-            length = socketConnection.Client.Receive(bytes);
-            // Get a stream object for reading 				
-            var incommingData = new byte[length];
-            Array.Copy(bytes, 0, incommingData, 0, length);
-            // Convert byte array to string message. 						
-            return Encoding.ASCII.GetString(incommingData);
-        }
-
-        public void StartGame()
-        {
-            this.Hide();
-            gamePlay.ShowDialog();
-            this.Show();
-        }
-
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            Start();
+            IPAddress ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
+            int port = 2000;
+            network.Start(ip, port);
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            network.Disconnected -= Network_Disconnected;
+            network.Stop();
         }
     }
 }

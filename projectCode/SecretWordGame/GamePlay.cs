@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Media;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SecretWordGame
@@ -18,10 +12,8 @@ namespace SecretWordGame
         string difficulty;
         string category;
 
-        TcpClient connectedTcpClient;
-        bool finished = false;
-
-        bool myturn;
+        List<char> pressedKeys;
+        Network network;
 
         public string Difficulty
         {
@@ -49,31 +41,62 @@ namespace SecretWordGame
             }
         }
 
-        List<char> pressedKeys;
-        SoundPlayer simpleSound;
-
-        Form1 form;
-
-        public GamePlay(TcpClient client, Form1 form)
+        public GamePlay(Network network)
         {
             InitializeComponent();
-            this.form = form;
 
-            simpleSound = new SoundPlayer();
-
-            connectedTcpClient = client;
-
+            this.network = network;
             pressedKeys = new List<char>();
 
-            listBox1.DataSource = pressedKeys;
-
+            network.ServerStoped += Network_ServerStoped;
+            network.ClientPressedLetter += Network_ClientPressedLetter;
             DrawKeyBoard();
+        }
 
+        private void Network_ServerStoped(object sender, EventArgs e)
+        {
+            MessageBox.Show("Game Ended");
 
+            network.ServerStoped -= Network_ServerStoped;
 
+            // save results before exit
 
+            this.Invoke((MethodInvoker)delegate ()
+            {
+                this.Close();
+            });
+        }
 
-            //Task.Run(() => Run());
+        private void GamePlay_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            network.Stop();
+        }
+
+        private void DrawKeyBoard()
+        {
+            Button[] buttons = new Button[26];
+            FlowLayoutPanel keyBoardPanel = new FlowLayoutPanel();
+            keyBoardPanel.Name = "keyBoardPanel";
+
+            for (int i = 0; i < 26; ++i)
+            {
+                buttons[i] = new Button();
+                buttons[i].Text = ((char)(i + 'A')).ToString();
+                buttons[i].Width = 65;
+                buttons[i].Height = 40;
+                buttons[i].Font = new Font("Time New Romans", 16);
+                buttons[i].Cursor = Cursors.Hand;
+                buttons[i].Click += Letter_Click;
+            }
+            keyBoardPanel.Width = 520;
+            keyBoardPanel.Height = 200;
+            keyBoardPanel.Padding = new Padding(10);
+            keyBoardPanel.Location = new Point((this.Width - keyBoardPanel.Size.Width) / 2, this.Height - 300);
+            keyBoardPanel.Anchor = AnchorStyles.Bottom;
+            //keyBoardPanel.BackColor = Color.FromArgb(100, Color.White);
+
+            keyBoardPanel.Controls.AddRange(buttons);
+            this.Controls.Add(keyBoardPanel);
         }
 
         private void DrawWord()
@@ -114,127 +137,43 @@ namespace SecretWordGame
             Button btn = sender as Button;
             btn.Enabled = false;
 
-            validate(btn.Text[0]);
-        }
+            char letter = btn.Text[0];
+            pressedKeys.Add(letter);
+            network.Send("letter", letter.ToString());
 
-
-        private void validate(char letter)
-        {
-            myturn = Guess(letter);
-
-            if (!myturn)
+            if (Guess(letter))
+            {
+                if (checkFinshed())
+                {
+                    // server win
+                    MessageBox.Show("Server Win");
+                    NewGame();
+                }
+            }
+            else
             {
                 EnableKeyBoard(false);
-                Task.Run(() => ReceiveLetters());
-            }
-            Send(pressedKeys.Last().ToString());
-
-            if (checkFinshed())
-            {
-                ShowResults();
             }
         }
 
-        private void ReceiveLetters()
+        private void Network_ClientPressedLetter(object sender, LetterPressedArgs e)
         {
-            string reply;
+            char letter = e.Letter;
+            pressedKeys.Add(letter);
 
-            while (true)
+            if (Guess(letter))
             {
-                reply = Receive();
-
-                if (!SocketConnected())
+                if (checkFinshed())
                 {
-                    form.StopServer();
-                }
-
-                if (Guess(reply[0]))
-                {
-                    if (checkFinshed())
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    EnableKeyBoard(true);
-                    MessageBox.Show("your turn");
-                    myturn = true;
-                    break;
+                    // client win
+                    MessageBox.Show("Client Win");
+                    NewGame();
                 }
             }
-
-            if (checkFinshed())
+            else
             {
-                ShowResults();
+                EnableKeyBoard(true);
             }
-        }
-
-        private void DrawKeyBoard()
-        {
-            Button[] buttons = new Button[26];
-            FlowLayoutPanel keyBoardPanel = new FlowLayoutPanel();
-            keyBoardPanel.Name = "keyBoardPanel";
-
-            for (int i = 0; i < 26; ++i)
-            {
-                buttons[i] = new Button();
-                buttons[i].Text = ((char)(i + 'A')).ToString();
-                buttons[i].Width = 65;
-                buttons[i].Height = 40;
-                buttons[i].Font = new Font("Time New Romans", 16);
-                buttons[i].Cursor = Cursors.Hand;
-                buttons[i].Click += Letter_Click;
-            }
-            keyBoardPanel.Width = 520;
-            keyBoardPanel.Height = 200;
-            keyBoardPanel.Padding = new Padding(10);
-            keyBoardPanel.Location = new Point((this.Width - keyBoardPanel.Size.Width) / 2, this.Height - 300);
-            keyBoardPanel.Anchor = AnchorStyles.Bottom;
-            //keyBoardPanel.BackColor = Color.FromArgb(100, Color.White);
-
-            keyBoardPanel.Controls.AddRange(buttons);
-            this.Controls.Add(keyBoardPanel);
-        }
-
-        //private void Run()
-        //{
-        //    while (!finished)
-        //    {
-        //        string message = Receive();
-        //    }
-        //}
-
-        private void Send(string message)
-        {
-            // Convert string message to byte array.                 
-            byte[] MessageAsByteArray = Encoding.ASCII.GetBytes(message);
-            // Write byte array to socketConnection stream.               
-            connectedTcpClient.Client.Send(MessageAsByteArray);
-        }
-
-        private string Receive()
-        {
-            Byte[] bytes = new Byte[1024];
-            int length;
-            string ret = "";
-            try
-            {
-                if (connectedTcpClient.Connected)
-                {
-                    length = connectedTcpClient.Client.Receive(bytes);
-                    // Get a stream object for reading 				
-                    var incommingData = new byte[length];
-                    Array.Copy(bytes, 0, incommingData, 0, length);
-                    // Convert byte array to string message. 						
-                    ret = Encoding.ASCII.GetString(incommingData);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            return ret;
         }
 
         private bool Guess(char letter)
@@ -274,43 +213,23 @@ namespace SecretWordGame
             return finished;
         }
 
-        private void ShowResults()
-        {
-            if (myturn)
-            {
-                MessageBox.Show("Win");
-
-            }
-            else if (!myturn)
-            {
-                MessageBox.Show("GG");
-            }
-
-            DialogResult result = MessageBox.Show("new game", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.Yes)
-            {
-                NewGame();
-            }
-            else
-            {
-                // save result to file
-                // stop server
-                // Close this window
-            }
-        }
-
-
         private void NewGame()
         {
-            secretWord = "elephant";
-            this.Invoke((MethodInvoker)delegate
+            List<string> myList = new List<string>();
+            myList.AddRange(new string[] { "Cow", "Rabbit", "Ducks", "Shrimp", "Pig", "Goat", "Crab", "Deer", "Bee", "Sheep", "Fish", "Turkey", "Dove", "Chicken", "Horse" });
+            Random r = new Random();
+            int index = r.Next(myList.Count);
+
+            secretWord = myList[index];
+
+            pressedKeys.Clear();
+
+            network.Send("newGame", secretWord);
+            this.Invoke((MethodInvoker)delegate ()
             {
                 DrawWord();
             });
 
-            myturn = true;
-
-            pressedKeys.Clear();
             EnableKeyBoard(true);
         }
 
@@ -332,66 +251,9 @@ namespace SecretWordGame
             }
         }
 
-        private void btnFreeze_Click(object sender, EventArgs e)
-        {
-            EnableKeyBoard(false);
-        }
-
-        private void btnUnfreeze_Click(object sender, EventArgs e)
-        {
-            EnableKeyBoard(true);
-        }
-
         private void GamePlay_Load(object sender, EventArgs e)
         {
-            //simpleSound.SoundLocation = @"./410574__yummie__game-background-music-loop-short.wav";
-            simpleSound.SoundLocation = @"./489035__michael-db__game-music-01.wav";
-            //simpleSound.PlayLooping();
-
             NewGame();
-        }
-
-        private void btnStopSound_Click(object sender, EventArgs e)
-        {
-            simpleSound.Stop();
-        }
-
-        private void GamePlay_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            simpleSound.Stop();
-
-            var result = MessageBox.Show("Are you sure ?", "", MessageBoxButtons.YesNo,MessageBoxIcon.Warning);
-            if(result == DialogResult.Yes)
-            {
-                connectedTcpClient.Close();
-            }
-            else
-            {
-                e.Cancel = true;
-            }
-        }
-
-        bool SocketConnected() //check whether client is connected server
-        {
-            bool flag = false;
-            try
-            {
-                bool part1 = connectedTcpClient.Client.Poll(10, SelectMode.SelectRead);
-                bool part2 = (connectedTcpClient.Available == 0);
-                if (part1 && part2)
-                {
-                    flag = false;
-                }
-                else
-                {
-                    flag = true;
-                }
-            }
-            catch (Exception er)
-            {
-                Console.WriteLine(er);
-            }
-            return flag;
         }
     }
 }

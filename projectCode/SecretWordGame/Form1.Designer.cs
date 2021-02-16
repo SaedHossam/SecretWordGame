@@ -31,7 +31,6 @@ namespace SecretWordGame
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnExit = new System.Windows.Forms.Button();
-            this.btnOptions = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslDifficulty = new System.Windows.Forms.ToolStripStatusLabel();
@@ -58,25 +57,6 @@ namespace SecretWordGame
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = false;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnOptions
-            // 
-            this.btnOptions.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnOptions.BackColor = System.Drawing.Color.DimGray;
-            this.btnOptions.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnOptions.FlatAppearance.BorderSize = 2;
-            this.btnOptions.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.btnOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnOptions.Font = new System.Drawing.Font("Times New Roman", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOptions.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnOptions.Location = new System.Drawing.Point(371, 193);
-            this.btnOptions.Name = "btnOptions";
-            this.btnOptions.Size = new System.Drawing.Size(240, 65);
-            this.btnOptions.TabIndex = 1;
-            this.btnOptions.Text = "Options";
-            this.btnOptions.UseVisualStyleBackColor = false;
-            this.btnOptions.Visible = false;
-            this.btnOptions.Click += new System.EventHandler(this.btnOptions_Click);
             // 
             // btnStart
             // 
@@ -136,17 +116,24 @@ namespace SecretWordGame
             this.btnStopSound.TabIndex = 3;
             this.btnStopSound.Text = "Stop Sound";
             this.btnStopSound.UseVisualStyleBackColor = false;
-            this.btnStopSound.Click += new System.EventHandler(this.btnStopSound_Click_1);
             // 
             // btnStop
             // 
-            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStop.Location = new System.Drawing.Point(862, 489);
+            this.btnStop.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btnStop.BackColor = System.Drawing.Color.DimGray;
+            this.btnStop.Enabled = false;
+            this.btnStop.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.btnStop.FlatAppearance.BorderSize = 2;
+            this.btnStop.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
+            this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnStop.Font = new System.Drawing.Font("Times New Roman", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnStop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.btnStop.Location = new System.Drawing.Point(371, 198);
             this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(120, 35);
-            this.btnStop.TabIndex = 4;
-            this.btnStop.Text = "Stop waiting";
-            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Size = new System.Drawing.Size(240, 65);
+            this.btnStop.TabIndex = 5;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = false;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // Form1
@@ -160,13 +147,12 @@ namespace SecretWordGame
             this.Controls.Add(this.btnStopSound);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.btnOptions);
             this.Controls.Add(this.btnStart);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Secret Word Server";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -177,7 +163,6 @@ namespace SecretWordGame
         #endregion
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button btnOptions;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsslDifficulty;
         private System.Windows.Forms.ToolStripStatusLabel tsslCategory;
