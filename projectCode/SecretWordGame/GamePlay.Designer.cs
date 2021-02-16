@@ -42,10 +42,9 @@ namespace SecretWordGame
             // 
             this.lblDifficulty.AutoSize = true;
             this.lblDifficulty.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDifficulty.Location = new System.Drawing.Point(10, 11);
-            this.lblDifficulty.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblDifficulty.Location = new System.Drawing.Point(13, 14);
             this.lblDifficulty.Name = "lblDifficulty";
-            this.lblDifficulty.Size = new System.Drawing.Size(61, 17);
+            this.lblDifficulty.Size = new System.Drawing.Size(75, 20);
             this.lblDifficulty.TabIndex = 2;
             this.lblDifficulty.Text = "Difficulty";
             // 
@@ -53,10 +52,9 @@ namespace SecretWordGame
             // 
             this.lblCategory.AutoSize = true;
             this.lblCategory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCategory.Location = new System.Drawing.Point(10, 41);
-            this.lblCategory.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblCategory.Location = new System.Drawing.Point(13, 50);
             this.lblCategory.Name = "lblCategory";
-            this.lblCategory.Size = new System.Drawing.Size(73, 17);
+            this.lblCategory.Size = new System.Drawing.Size(85, 20);
             this.lblCategory.TabIndex = 3;
             this.lblCategory.Text = "Categeory";
             // 
@@ -64,47 +62,55 @@ namespace SecretWordGame
             // 
             this.lblClientResult.AutoSize = true;
             this.lblClientResult.Font = new System.Drawing.Font("Tahoma", 14F);
-            this.lblClientResult.Location = new System.Drawing.Point(100, 41);
+            this.lblClientResult.Location = new System.Drawing.Point(175, 43);
+            this.lblClientResult.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblClientResult.Name = "lblClientResult";
-            this.lblClientResult.Size = new System.Drawing.Size(0, 23);
+            this.lblClientResult.Size = new System.Drawing.Size(26, 29);
             this.lblClientResult.TabIndex = 8;
+            this.lblClientResult.Text = "0";
             // 
             // lblServerResult
             // 
+            this.lblServerResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblServerResult.AutoSize = true;
             this.lblServerResult.Font = new System.Drawing.Font("Tahoma", 14F);
-            this.lblServerResult.Location = new System.Drawing.Point(531, 41);
+            this.lblServerResult.Location = new System.Drawing.Point(834, 42);
+            this.lblServerResult.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblServerResult.Name = "lblServerResult";
-            this.lblServerResult.Size = new System.Drawing.Size(0, 23);
+            this.lblServerResult.Size = new System.Drawing.Size(26, 29);
             this.lblServerResult.TabIndex = 7;
+            this.lblServerResult.Text = "0";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Tahoma", 14F);
-            this.label1.Location = new System.Drawing.Point(101, 5);
+            this.label1.Location = new System.Drawing.Point(135, 6);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(109, 23);
+            this.label1.Size = new System.Drawing.Size(138, 29);
             this.label1.TabIndex = 10;
             this.label1.Text = "Client Score";
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Tahoma", 14F);
-            this.label2.Location = new System.Drawing.Point(519, 5);
+            this.label2.Location = new System.Drawing.Point(776, 5);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(117, 23);
+            this.label2.Size = new System.Drawing.Size(149, 29);
             this.label2.TabIndex = 9;
             this.label2.Text = "Server Score";
             // 
             // GamePlay
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(736, 449);
+            this.ClientSize = new System.Drawing.Size(981, 553);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblClientResult);
@@ -112,7 +118,7 @@ namespace SecretWordGame
             this.Controls.Add(this.lblCategory);
             this.Controls.Add(this.lblDifficulty);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "GamePlay";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GamePlay Server";

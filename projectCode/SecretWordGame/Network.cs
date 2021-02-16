@@ -74,14 +74,13 @@ namespace SecretWordGame
         {
             byte[] data = new byte[1000];
             //String text = null;
-            while (true)
+            while (!source.IsCancellationRequested)
             {
                 try
                 {
                     NetworkStream stream = connectedTcpClient.GetStream(); //Gets The Stream of The Connection
                     stream.Read(data, 0, data.Length); //Receives Data 
                     List<string> parts = (List<string>)ByteArrayToObject(data);
-
 
                     if (!SocketConnected())
                     {

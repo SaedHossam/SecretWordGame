@@ -105,7 +105,13 @@ namespace SecretWordGame
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            network.Start();
+            var options = new OptionsDialog(Difficulty, Category);
+            if (options.ShowDialog() == DialogResult.OK)
+            {
+                Difficulty = options.Difficulty;
+                Category = options.Category;
+                network.Start();
+            }
         }
 
         private void btnStop_Click(object sender, EventArgs e)

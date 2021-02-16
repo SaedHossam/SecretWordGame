@@ -86,6 +86,10 @@ namespace SecretWordGameClient
                         case "askStart":
                             DialogResult result = MessageBox.Show(parts[1], "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                             Send("start", result.ToString());
+                            if(result == DialogResult.No)
+                            {
+                                Stop();
+                            }
                             break;
                         case "runGame":
                             EventHandler gameStartedHandler = GameStarted;
