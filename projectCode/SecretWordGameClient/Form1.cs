@@ -65,9 +65,16 @@ namespace SecretWordGameClient
 
         private void btnPlay_Click(object sender, EventArgs e)
         {
-            IPAddress ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            int port = 2000;
-            network.Start(ip, port);
+            var result = IPAddress.TryParse(txtIp.Text, out IPAddress ip);
+            if (result == true)
+            {
+                int port = 2000;
+                network.Start(ip, port);
+            }
+            else
+            {
+                MessageBox.Show("invalid Ip address");
+            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)

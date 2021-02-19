@@ -35,14 +35,16 @@ namespace SecretWordGame
         public event EventHandler ClientDisconnected;
         public event EventHandler<LetterPressedArgs> ClientPressedLetter;
 
-        public Network(IPAddress iP, int port)
-        {
-            // Create listener using ip and port 			
-            tcpListener = new TcpListener(iP, port);
-        }
+        //public Network(IPAddress iP, int port)
+        //{
+        //    // Create listener using ip and port 			
+        //    //tcpListener = new TcpListener(iP, port);
+        //}
 
-        public async Task Start()
+        public async Task Start(IPAddress iP, int port)
         {
+            tcpListener = new TcpListener(iP, port);
+
             connectedTcpClient = null;
             source = new CancellationTokenSource();
             token = source.Token;
@@ -131,24 +133,27 @@ namespace SecretWordGame
 
         public void Stop()
         {
-            if (tcpListener.Server.IsBound)
+            if (tcpListener != null)
             {
-                if (connectedTcpClient != null)
+                if (tcpListener.Server.IsBound)
                 {
-                    if (connectedTcpClient.Client.IsBound)
+                    if (connectedTcpClient != null)
                     {
-                        connectedTcpClient.Client.Close();
-                        connectedTcpClient = null;
+                        if (connectedTcpClient.Client.IsBound)
+                        {
+                            connectedTcpClient.Client.Close();
+                            connectedTcpClient = null;
+                        }
                     }
-                }
 
-                source.Cancel();
-                tcpListener.Stop();
+                    source.Cancel();
+                    tcpListener.Stop();
 
-                EventHandler serverStopedHandler = ServerStoped;
-                if (serverStopedHandler != null)
-                {
-                    serverStopedHandler(this, null);
+                    EventHandler serverStopedHandler = ServerStoped;
+                    if (serverStopedHandler != null)
+                    {
+                        serverStopedHandler(this, null);
+                    }
                 }
             }
         }

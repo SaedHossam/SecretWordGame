@@ -56,7 +56,7 @@ namespace SecretWordGame
 
         private void Network_ServerStoped(object sender, EventArgs e)
         {
-            MessageBox.Show("Game Ended");
+            MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended",MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             network.ServerStoped -= Network_ServerStoped;
             clientDisconnected = true;

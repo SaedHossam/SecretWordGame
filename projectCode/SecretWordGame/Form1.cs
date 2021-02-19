@@ -55,15 +55,16 @@ namespace SecretWordGame
             Difficulty = "Medium";
             Category = "Animals";
 
-            IPAddress ip = new IPAddress(new byte[] { 127, 0, 0, 1 });
-            int port = 2000;
+            network = new Network();
 
-            network = new Network(ip, port);
             network.ServerStarted += Network_ServerStarted;
             network.ServerStoped += Network_ServerStoped;
             network.GameStarted += Network_GameStarted;
             network.ClientConnected += Network_ClientConnected;
             network.ClientDisconnected += Network_ClientDisconnected;
+
+            var ipList = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToList();
+            cbIp.DataSource = ipList;
         }
 
         private void Network_ServerStarted(object sender, EventArgs e)
@@ -108,9 +109,13 @@ namespace SecretWordGame
             var options = new OptionsDialog(Difficulty, Category);
             if (options.ShowDialog() == DialogResult.OK)
             {
+                IPAddress ip = IPAddress.Parse(cbIp.SelectedItem.ToString());
+                int port = 2000;
+
                 Difficulty = options.Difficulty;
                 Category = options.Category;
-                network.Start();
+
+                network.Start(ip, port);
             }
         }
 

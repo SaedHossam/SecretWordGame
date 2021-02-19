@@ -91,7 +91,6 @@ namespace SecretWordGameClient
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                MessageBox.Show("Game Ended", "client");
                 this.Close();
             }
         }
@@ -100,7 +99,7 @@ namespace SecretWordGameClient
         {
             if (serverDisconnected)
             {
-                MessageBox.Show("Server Disconnected", "client");
+                MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
@@ -111,6 +110,8 @@ namespace SecretWordGameClient
                 }
                 else
                 {
+                    MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                     network.Disconnected -= Network_Disconnected;
                     network.ServerPressedLetter -= Network_ServerPressedLetter;
                     network.NewGame -= Network_NewGame;

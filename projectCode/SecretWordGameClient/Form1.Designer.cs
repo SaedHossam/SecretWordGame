@@ -33,6 +33,8 @@ namespace SecretWordGameClient
             this.btnExit = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnStopSound = new System.Windows.Forms.Button();
+            this.txtIp = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnExit
@@ -88,6 +90,24 @@ namespace SecretWordGameClient
             this.btnStopSound.Text = "Stop Sound";
             this.btnStopSound.UseVisualStyleBackColor = false;
             // 
+            // txtIp
+            // 
+            this.txtIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIp.Location = new System.Drawing.Point(12, 41);
+            this.txtIp.Name = "txtIp";
+            this.txtIp.Size = new System.Drawing.Size(175, 26);
+            this.txtIp.TabIndex = 9;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(12, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(169, 25);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Server Ip Address";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -95,6 +115,8 @@ namespace SecretWordGameClient
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(982, 553);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtIp);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.btnPlay);
             this.Controls.Add(this.btnStopSound);
@@ -104,6 +126,7 @@ namespace SecretWordGameClient
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -112,6 +135,8 @@ namespace SecretWordGameClient
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnPlay;
         private System.Windows.Forms.Button btnStopSound;
+        private System.Windows.Forms.TextBox txtIp;
+        private System.Windows.Forms.Label label1;
     }
 }
 
