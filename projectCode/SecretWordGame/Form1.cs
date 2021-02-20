@@ -86,7 +86,7 @@ namespace SecretWordGame
         {
             //MessageBox.Show("Client Connected");
 
-            network.Send("askStart", $"Do tou want to play a game with difficulty {Difficulty} and category {Category}?");
+            network.Send("askStart", $"Do you want to play a game with difficulty {Difficulty} and category {Category}?");
         }
 
         private void Network_ClientDisconnected(object sender, EventArgs e)
