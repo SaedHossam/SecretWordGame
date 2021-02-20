@@ -52,8 +52,8 @@ namespace SecretWordGame
         {
             InitializeComponent();
 
-            Difficulty = "Medium";
-            Category = "Animals";
+            Difficulty = "";
+            Category = "";
 
             network = new Network();
 
@@ -64,7 +64,14 @@ namespace SecretWordGame
             network.ClientDisconnected += Network_ClientDisconnected;
 
             var ipList = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToList();
-            cbIp.DataSource = ipList;
+
+            cbIp.Items.Add("127.0.0.1");
+            foreach (var ip in ipList)
+            {
+                cbIp.Items.Add(ip);
+            }
+
+            cbIp.SelectedIndex = 0;
         }
 
         private void Network_ServerStarted(object sender, EventArgs e)
@@ -86,7 +93,7 @@ namespace SecretWordGame
         {
             //MessageBox.Show("Client Connected");
 
-            network.Send("askStart", $"Do you want to play a game with difficulty {Difficulty} and category {Category}?");
+            network.Send("askStart", $"Do tou want to play a game with difficulty {Difficulty} and category {Category}?");
         }
 
         private void Network_ClientDisconnected(object sender, EventArgs e)
@@ -106,7 +113,7 @@ namespace SecretWordGame
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            var options = new OptionsDialog(Difficulty, Category);
+            var options = new OptionsDialog();
             if (options.ShowDialog() == DialogResult.OK)
             {
                 IPAddress ip = IPAddress.Parse(cbIp.SelectedItem.ToString());

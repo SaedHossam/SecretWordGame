@@ -97,6 +97,7 @@ namespace SecretWordGameClient
             this.txtIp.Name = "txtIp";
             this.txtIp.Size = new System.Drawing.Size(175, 26);
             this.txtIp.TabIndex = 9;
+            this.txtIp.Text = "127.0.0.1";
             // 
             // label1
             // 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -56,12 +57,10 @@ namespace SecretWordGame
 
         private void Network_ServerStoped(object sender, EventArgs e)
         {
-            MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended",MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Result\nServer: {serverResult} #### Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             network.ServerStoped -= Network_ServerStoped;
             clientDisconnected = true;
-            // save results before exit
-            //this.FormClosing -= GamePlay_FormClosing;
             this.Invoke((MethodInvoker)delegate ()
             {
                 this.Close();
@@ -72,20 +71,29 @@ namespace SecretWordGame
         {
             if (clientDisconnected)
             {
+                SaveResultsToFile();
                 MessageBox.Show("Client Dissconnected", "Server");
             }
             else
             {
                 var res = MessageBox.Show("Are you sure you want to Exit?", "Server", MessageBoxButtons.YesNo);
-                if(res == DialogResult.No)
+                if (res == DialogResult.No)
                 {
                     e.Cancel = true;
                 }
                 else
                 {
+                    SaveResultsToFile();
                     network.Stop();
-                }        
+                }
             }
+        }
+
+        private void SaveResultsToFile()
+        {
+            StreamWriter writer = File.AppendText("Results.txt");
+            writer.WriteLine($"Server: {serverResult} : Client: {clientResult}");
+            writer.Close();
         }
 
         private void DrawKeyBoard()
@@ -109,8 +117,6 @@ namespace SecretWordGame
             keyBoardPanel.Padding = new Padding(10);
             keyBoardPanel.Location = new Point((this.Width - keyBoardPanel.Size.Width) / 2, this.Height - 300);
             keyBoardPanel.Anchor = AnchorStyles.Bottom;
-            //keyBoardPanel.BackColor = Color.FromArgb(100, Color.White);
-
             keyBoardPanel.Controls.AddRange(buttons);
             this.Controls.Add(keyBoardPanel);
         }
@@ -130,7 +136,6 @@ namespace SecretWordGame
             {
                 labels[i] = new Label();
                 labels[i].Text = "_";
-                //labels[i].Text = SecretWord[i].ToString();
                 labels[i].Font = new Font("Time New Romans", 18);
                 labels[i].Width = 25;
                 labels[i].Height = 30;
@@ -233,13 +238,13 @@ namespace SecretWordGame
 
         private void NewGame()
         {
-            List<string> myList = new List<string>();
-            myList.AddRange(new string[] { "Cow", "Rabbit", "Ducks", "Shrimp", "Pig", "Goat", "Crab", "Deer", "Bee", "Sheep", "Fish", "Turkey", "Dove", "Chicken", "Horse" });
-            Random r = new Random();
-            int index = r.Next(myList.Count);
-
-            secretWord = myList[index];
-
+            CFDB ENT = new CFDB();
+            var Sec = (from S in ENT.WordsGames
+                       where S.Difficulty == this.Difficulty
+                            && S.Category == this.category
+                       orderby Guid.NewGuid()
+                       select S.Word).FirstOrDefault();
+            secretWord = Sec;
             pressedKeys.Clear();
 
             network.Send("newGame", secretWord);
