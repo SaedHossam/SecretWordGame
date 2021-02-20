@@ -38,18 +38,21 @@ namespace SecretWordGame
             {
                 cbCategory.Items.Add(C);
             }
-
-            cbDifficulty.SelectedIndex = cbDifficulty.Items.IndexOf(Difficulty);
-            cbCategory.SelectedIndex = cbCategory.Items.IndexOf(Category);
-
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            Difficulty = (string)cbDifficulty.SelectedItem;
-            Category = (string)cbCategory.SelectedItem;
-            this.Close();
+            if (cbCategory.SelectedIndex == -1 || cbDifficulty.SelectedIndex == -1)
+            {
+                MessageBox.Show("All fields required");
+            }
+            else
+            {
+                this.DialogResult = DialogResult.OK;
+                Difficulty = (string)cbDifficulty.SelectedItem;
+                Category = (string)cbCategory.SelectedItem;
+                this.Close();
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

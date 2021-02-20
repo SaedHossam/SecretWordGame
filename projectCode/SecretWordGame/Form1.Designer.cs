@@ -35,7 +35,6 @@ namespace SecretWordGame
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsslDifficulty = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsslCategory = new System.Windows.Forms.ToolStripStatusLabel();
-            this.btnStopSound = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
             this.cbIp = new System.Windows.Forms.ComboBox();
             this.statusStrip1.SuspendLayout();
@@ -51,7 +50,7 @@ namespace SecretWordGame
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnExit.Font = new System.Drawing.Font("Times New Roman", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExit.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnExit.Location = new System.Drawing.Point(371, 375);
+            this.btnExit.Location = new System.Drawing.Point(371, 374);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(240, 65);
             this.btnExit.TabIndex = 2;
@@ -101,23 +100,6 @@ namespace SecretWordGame
             this.tsslCategory.Size = new System.Drawing.Size(69, 20);
             this.tsslCategory.Text = "Category";
             // 
-            // btnStopSound
-            // 
-            this.btnStopSound.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.btnStopSound.BackColor = System.Drawing.Color.DimGray;
-            this.btnStopSound.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.btnStopSound.FlatAppearance.BorderSize = 2;
-            this.btnStopSound.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightGray;
-            this.btnStopSound.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnStopSound.Font = new System.Drawing.Font("Times New Roman", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnStopSound.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnStopSound.Location = new System.Drawing.Point(371, 284);
-            this.btnStopSound.Name = "btnStopSound";
-            this.btnStopSound.Size = new System.Drawing.Size(240, 65);
-            this.btnStopSound.TabIndex = 3;
-            this.btnStopSound.Text = "Stop Sound";
-            this.btnStopSound.UseVisualStyleBackColor = false;
-            // 
             // btnStop
             // 
             this.btnStop.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -129,7 +111,7 @@ namespace SecretWordGame
             this.btnStop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStop.Font = new System.Drawing.Font("Times New Roman", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnStop.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnStop.Location = new System.Drawing.Point(371, 198);
+            this.btnStop.Location = new System.Drawing.Point(371, 238);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(240, 65);
             this.btnStop.TabIndex = 5;
@@ -139,9 +121,10 @@ namespace SecretWordGame
             // 
             // cbIp
             // 
+            this.cbIp.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbIp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbIp.FormattingEnabled = true;
-            this.cbIp.Location = new System.Drawing.Point(12, 12);
+            this.cbIp.Location = new System.Drawing.Point(225, 117);
             this.cbIp.Name = "cbIp";
             this.cbIp.Size = new System.Drawing.Size(140, 28);
             this.cbIp.TabIndex = 6;
@@ -155,7 +138,6 @@ namespace SecretWordGame
             this.ClientSize = new System.Drawing.Size(982, 553);
             this.Controls.Add(this.cbIp);
             this.Controls.Add(this.btnStop);
-            this.Controls.Add(this.btnStopSound);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnStart);
@@ -177,7 +159,6 @@ namespace SecretWordGame
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsslDifficulty;
         private System.Windows.Forms.ToolStripStatusLabel tsslCategory;
-        private System.Windows.Forms.Button btnStopSound;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.ComboBox cbIp;
     }

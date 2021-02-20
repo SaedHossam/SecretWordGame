@@ -12,6 +12,7 @@ namespace SecretWordGame
         string secretWord;
         string difficulty;
         string category;
+        bool formIsClosing = false;
         bool clientDisconnected = false;
         int serverResult, clientResult;
         List<char> pressedKeys;
@@ -61,10 +62,13 @@ namespace SecretWordGame
 
             network.ServerStoped -= Network_ServerStoped;
             clientDisconnected = true;
-            this.Invoke((MethodInvoker)delegate ()
+            if (!formIsClosing)
             {
-                this.Close();
-            });
+                this.Invoke((MethodInvoker)delegate ()
+                {
+                    this.Close();
+                });
+            }
         }
 
         private void GamePlay_FormClosing(object sender, FormClosingEventArgs e)
@@ -83,7 +87,7 @@ namespace SecretWordGame
                 }
                 else
                 {
-                    SaveResultsToFile();
+                    formIsClosing = true;
                     network.Stop();
                 }
             }
