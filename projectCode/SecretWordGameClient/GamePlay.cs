@@ -16,6 +16,7 @@ namespace SecretWordGameClient
         bool serverDisconnected = false;
         int serverResult, clientResult;
         UIService ui;
+
         public GamePlay(ClientNetworkServices network)
         {
             InitializeComponent();
@@ -26,15 +27,39 @@ namespace SecretWordGameClient
             network.Disconnected += NetworkDisconnected;
             network.ServerPressedLetter += NetworkServerPressedLetter;
             network.NewGame += NetworkNewGame;
+            network.playagain += Networkplayagain;
 
             ui.DrawKeyBoard(this, LetterClick);
+        }
+
+        private void Networkplayagain(object sender, PlayAgainArgs e)
+        {
+            if (e.Response == "no")
+            {
+                MessageBox.Show("Server refused to play again", "Game ended");
+
+                network.Stop();
+            }
+            else
+            {
+                DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                {
+                    network.Send("playAgain", "yes");
+                }
+                else
+                {
+                    network.Send("playAgain", "no");
+                    network.Stop();
+                }
+            }
         }
 
         private void NetworkNewGame(object sender, Business.NewGamePressedArgs e)
         {
             secretWord = e.SecretWord;
             pressedKeys.Clear();
-            
+
             //Invalidate();
             if (this.InvokeRequired)
             {
@@ -64,7 +89,7 @@ namespace SecretWordGameClient
                 {
                     // server win
                     ++serverResult;
-                    MessageBox.Show("Server Win", "Client");
+                    //MessageBox.Show("Server Win", "Client");
                 }
             }
             else
@@ -121,67 +146,6 @@ namespace SecretWordGameClient
             }
         }
 
-        //private void DrawKeyBoard()
-        //{
-        //    Button[] buttons = new Button[26];
-        //    FlowLayoutPanel keyBoardPanel = new FlowLayoutPanel();
-        //    keyBoardPanel.Name = "keyBoardPanel";
-
-        //    for (int i = 0; i < 26; ++i)
-        //    {
-        //        buttons[i] = new Button();
-        //        buttons[i].Text = ((char)(i + 'A')).ToString();
-        //        buttons[i].Width = 65;
-        //        buttons[i].Height = 40;
-        //        buttons[i].Font = new Font("Time New Romans", 16);
-        //        buttons[i].Cursor = Cursors.Hand;
-        //        buttons[i].Click += Letter_Click;
-        //    }
-        //    keyBoardPanel.Width = 520;
-        //    keyBoardPanel.Height = 200;
-        //    keyBoardPanel.Padding = new Padding(10);
-        //    keyBoardPanel.Location = new Point((this.Width - keyBoardPanel.Size.Width) / 2, this.Height - 300);
-        //    keyBoardPanel.Anchor = AnchorStyles.Bottom;
-        //    //keyBoardPanel.BackColor = Color.FromArgb(100, Color.White);
-
-        //    keyBoardPanel.Controls.AddRange(buttons);
-        //    this.Controls.Add(keyBoardPanel);
-        //}
-
-        //private void DrawWord()
-        //{
-        //    if (this.Controls["lettersPanel"] != null)
-        //    {
-        //        this.Controls.Remove(this.Controls["lettersPanel"]);
-        //    }
-
-        //    FlowLayoutPanel panel = new FlowLayoutPanel();
-        //    panel.Name = "lettersPanel";
-
-        //    Label[] labels = new Label[secretWord.Length];
-        //    for (int i = 0; i < secretWord.Length; ++i)
-        //    {
-        //        labels[i] = new Label();
-        //        labels[i].Text = "_";
-        //        //labels[i].Text = SecretWord[i].ToString();
-        //        labels[i].Font = new Font("Time New Romans", 18);
-        //        labels[i].Width = 25;
-        //        labels[i].Height = 30;
-        //    }
-
-        //    panel.Controls.AddRange(labels);
-
-        //    panel.AutoSize = true;
-        //    panel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-        //    panel.Location = new Point((this.Width - panel.Size.Width) / 2, 50);
-        //    panel.Anchor = AnchorStyles.Top;
-        //    panel.Padding = new Padding(10);
-        //    panel.BackColor = Color.FromArgb(150, Color.White);
-
-        //    this.Controls.Add(panel);
-        //}
-
-
         private void LetterClick(object sender, EventArgs e)
         {
             Button btn = sender as Button;
@@ -197,7 +161,7 @@ namespace SecretWordGameClient
                 {
                     // client win show result and wait new word
                     ++clientResult;
-                    MessageBox.Show("Client win", "Client");
+                    //MessageBox.Show("Client win", "Client");
                 }
             }
             else

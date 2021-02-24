@@ -16,6 +16,11 @@ namespace Business
         public char Letter { get; set; }
     }
 
+    public class PlayAgainArgs : EventArgs
+    {
+        public string Response { get; set; }
+    }
+
     public class NetworkServices
     {
         // TCPListener to listen for incomming TCP connection requests.
@@ -33,12 +38,7 @@ namespace Business
         public event EventHandler ClientConnected;
         public event EventHandler ClientDisconnected;
         public event EventHandler<LetterPressedArgs> ClientPressedLetter;
-
-        //public Network(IPAddress iP, int port)
-        //{
-        //    // Create listener using ip and port 			
-        //    //tcpListener = new TcpListener(iP, port);
-        //}
+        public event EventHandler<PlayAgainArgs> ClientPlayAgainResponse;
 
         public async Task Start(IPAddress iP, int port)
         {
@@ -111,6 +111,13 @@ namespace Business
                             if (clientPressedLetterHandler != null)
                             {
                                 clientPressedLetterHandler(this, new LetterPressedArgs() { Letter = parts[1][0] });
+                            }
+                            break;
+                        case "playAgain":
+                            EventHandler<PlayAgainArgs>  ClientPlayAgainHandler= ClientPlayAgainResponse;
+                            if (ClientPlayAgainHandler != null)
+                            {
+                                ClientPlayAgainHandler(this, new PlayAgainArgs() { Response = parts[1] });
                             }
                             break;
                     }

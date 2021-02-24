@@ -16,6 +16,7 @@ namespace Business
     {
         public string SecretWord { get; set; }
     }
+
     public class ClientNetworkServices
     {
 
@@ -33,6 +34,7 @@ namespace Business
         public event EventHandler Disconnected;
         public event EventHandler<LetterPressedArgs> ServerPressedLetter;
         public event EventHandler<NewGamePressedArgs> NewGame;
+        public event EventHandler<PlayAgainArgs> playagain;
 
         public async Task Start(IPAddress ip, int port)
         {
@@ -105,6 +107,13 @@ namespace Business
                             if (serverPressedLetterHandler != null)
                             {
                                 serverPressedLetterHandler(this, new LetterPressedArgs() { Letter = parts[1][0] });
+                            }
+                            break;
+                        case "playAgain":
+                            EventHandler<PlayAgainArgs> playAgainHandler = playagain;
+                            if (playAgainHandler != null)
+                            {
+                                playAgainHandler(this, new PlayAgainArgs() { Response = parts[1] });
                             }
                             break;
                     }
