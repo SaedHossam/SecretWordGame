@@ -124,6 +124,7 @@ namespace SecretWordGame
             this.Text = "GamePlay Server";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GamePlayFormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GamePlayFormClosed);
             this.Load += new System.EventHandler(this.GamePlayLoad);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -23,6 +23,7 @@ namespace SecretWordGame
         GamePlay gamePlay;
         //Network network;
         NetworkServices network;
+
         public string Difficulty
         {
             get
@@ -48,21 +49,13 @@ namespace SecretWordGame
                 tsslCategory.Text = _category;
             }
         }
-        
+
         public Form1()
         {
             InitializeComponent();
 
             Difficulty = "";
             Category = "";
-            
-            network = new NetworkServices();
-
-            network.ServerStarted += NetworkServerStarted;
-            network.ServerStoped += NetworkServerStoped;
-            network.GameStarted += NetworkGameStarted;
-            network.ClientConnected += NetworkClientConnected;
-            network.ClientDisconnected += NetworkClientDisconnected;
 
             var ipList = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToList();
 
@@ -97,11 +90,6 @@ namespace SecretWordGame
             network.Send("askStart", $"Do tou want to play a game with difficulty {Difficulty} and category {Category}?");
         }
 
-        private void NetworkClientDisconnected(object sender, EventArgs e)
-        {
-            MessageBox.Show("Client Disconnected");
-        }
-
         private void NetworkGameStarted(object sender, EventArgs e)
         {
             gamePlay = new GamePlay(network) { Difficulty = this.Difficulty, Category = this.Category };
@@ -123,6 +111,13 @@ namespace SecretWordGame
                 Difficulty = options.Difficulty;
                 Category = options.Category;
 
+                network = new NetworkServices();
+
+                network.ServerStarted += NetworkServerStarted;
+                network.ServerStoped += NetworkServerStoped;
+                network.GameStarted += NetworkGameStarted;
+                network.ClientConnected += NetworkClientConnected;
+
                 _ = network.Start(ip, port);
             }
         }
@@ -140,7 +135,10 @@ namespace SecretWordGame
 
         private void Form1FormClosing(object sender, FormClosingEventArgs e)
         {
-            network.Stop();
+            if (network != null)
+            {
+                network.Stop();
+            }
         }
     }
 }

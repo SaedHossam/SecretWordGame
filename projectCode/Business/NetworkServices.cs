@@ -102,6 +102,7 @@ namespace Business
                                     }
                                     break;
                                 case ("No"):
+                                    MessageBox.Show("Client Refused to play, start server again", "server stopped");
                                     Stop();
                                     break;
                             }

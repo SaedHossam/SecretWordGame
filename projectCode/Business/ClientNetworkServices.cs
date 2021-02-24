@@ -85,6 +85,7 @@ namespace Business
                             Send("start", result.ToString());
                             if (result == DialogResult.No)
                             {
+                                Thread.Sleep(500);
                                 Stop();
                             }
                             break;

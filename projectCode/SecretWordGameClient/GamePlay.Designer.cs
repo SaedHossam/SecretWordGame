@@ -36,6 +36,7 @@ namespace SecretWordGameClient
             this.label2 = new System.Windows.Forms.Label();
             this.lblClientResult = new System.Windows.Forms.Label();
             this.lblServerResult = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // lblDifficulty
@@ -104,6 +105,17 @@ namespace SecretWordGameClient
             this.lblServerResult.TabIndex = 11;
             this.lblServerResult.Text = "0";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.progressBar1.Location = new System.Drawing.Point(240, 206);
+            this.progressBar1.MarqueeAnimationSpeed = 50;
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(500, 20);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar1.TabIndex = 15;
+            this.progressBar1.Visible = false;
+            // 
             // GamePlay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -111,6 +123,7 @@ namespace SecretWordGameClient
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(981, 553);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblClientResult);
@@ -124,6 +137,8 @@ namespace SecretWordGameClient
             this.Text = "GamePlay Client";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.GamePlayFormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GamePlay_FormClosed);
+            this.Load += new System.EventHandler(this.GamePlay_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -136,5 +151,6 @@ namespace SecretWordGameClient
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblClientResult;
         private System.Windows.Forms.Label lblServerResult;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }

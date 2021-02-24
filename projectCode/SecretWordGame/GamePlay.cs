@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Threading;
 using System.Windows.Forms;
 using Business;
@@ -21,6 +22,8 @@ namespace SecretWordGame
         //Network network;
         NetworkServices network;
         UIService ui;
+
+        SoundPlayer simpleSound;
 
         public string Difficulty
         {
@@ -59,6 +62,8 @@ namespace SecretWordGame
             network.ClientPressedLetter += NetworkClientPressedLetter;
             network.ClientPlayAgainResponse += NetworkClientPlayAgainResponse;
 
+            simpleSound = new SoundPlayer(@"tick.wav");
+
             ui.DrawKeyBoard(this, LetterClick);
         }
 
@@ -70,7 +75,7 @@ namespace SecretWordGame
             }
             else
             {
-                MessageBox.Show("Client refused to play again", "Game ended");
+                MessageBox.Show("Client refused to play again", "Game ended", MessageBoxButtons.OK);
                 network.Stop();
             }
         }
@@ -92,9 +97,8 @@ namespace SecretWordGame
         {
             if (clientDisconnected)
             {
-                MessageBox.Show("Client Dissconnected", "Server");
                 SaveResultsToFile();
-                MessageBox.Show($"Result\nServer: {serverResult} #### Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Client Dissconnected\nResult\nServer: {serverResult} #### Client: {clientResult}", "Game Ended", MessageBoxButtons.OK);
             }
             else
             {
@@ -106,7 +110,8 @@ namespace SecretWordGame
                 else
                 {
                     SaveResultsToFile();
-                    MessageBox.Show($"Result\nServer: {serverResult} #### Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Result\n\n\tServer: {serverResult} \n\t Client: {clientResult}", "Game Ended", MessageBoxButtons.OK);
+
                     formIsClosing = true;
                     network.Stop();
                 }
@@ -146,7 +151,11 @@ namespace SecretWordGame
                     //MessageBox.Show("Server Win");
                     ++serverResult;
 
-                    DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    simpleSound.SoundLocation = "end.wav";
+                    simpleSound.Play();
+                    EnableKeyBoard(false);
+                    DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo);
+
                     if (result == DialogResult.Yes)
                     {
                         network.Send("playAgain", "yes");
@@ -154,12 +163,20 @@ namespace SecretWordGame
                     else
                     {
                         network.Send("playAgain", "no");
+                        Thread.Sleep(500);
                         network.Stop();
                     }
+                }
+                else
+                {
+                    simpleSound.SoundLocation = "tick.wav";
+                    simpleSound.Play();
                 }
             }
             else
             {
+                simpleSound.SoundLocation = "tick.wav";
+                simpleSound.Play();
                 EnableKeyBoard(false);
             }
         }
@@ -177,7 +194,12 @@ namespace SecretWordGame
                     //MessageBox.Show("Client Win");
                     ++clientResult;
 
-                    DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    simpleSound.SoundLocation = "end.wav";
+                    simpleSound.Play();
+
+                    EnableKeyBoard(false);
+                    DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo);
+
                     if (result == DialogResult.Yes)
                     {
                         network.Send("playAgain", "yes");
@@ -185,12 +207,21 @@ namespace SecretWordGame
                     else
                     {
                         network.Send("playAgain", "no");
+                        Thread.Sleep(500);
                         network.Stop();
                     }
+
+                }
+                else
+                {
+                    simpleSound.SoundLocation = "tick.wav";
+                    simpleSound.Play();
                 }
             }
             else
             {
+                simpleSound.SoundLocation = "tick.wav";
+                simpleSound.Play();
                 EnableKeyBoard(true);
             }
         }
@@ -271,8 +302,14 @@ namespace SecretWordGame
             }
         }
 
+        private void GamePlayFormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.OpenForms["Form1"].Show();
+        }
+
         private void GamePlayLoad(object sender, EventArgs e)
         {
+            Application.OpenForms["Form1"].Hide();
             NewGame();
         }
     }

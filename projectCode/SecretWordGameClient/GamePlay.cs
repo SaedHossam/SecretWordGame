@@ -20,6 +20,7 @@ namespace SecretWordGameClient
         public GamePlay(ClientNetworkServices network)
         {
             InitializeComponent();
+
             serverResult = clientResult = 0;
             this.network = network;
             pressedKeys = new List<char>();
@@ -34,15 +35,20 @@ namespace SecretWordGameClient
 
         private void Networkplayagain(object sender, PlayAgainArgs e)
         {
+            this.Invoke((MethodInvoker)delegate ()
+            {
+                progressBar1.Visible = false;
+            });
+
             if (e.Response == "no")
             {
-                MessageBox.Show("Server refused to play again", "Game ended");
+                MessageBox.Show("Server refused to play again", "Game ended", MessageBoxButtons.OK);
 
                 network.Stop();
             }
             else
             {
-                DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show("Do you want to play Again?", "play again", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
                     network.Send("playAgain", "yes");
@@ -90,6 +96,11 @@ namespace SecretWordGameClient
                     // server win
                     ++serverResult;
                     //MessageBox.Show("Server Win", "Client");
+                    this.Invoke((MethodInvoker)delegate ()
+                    {
+                        progressBar1.Visible = true;
+                        EnableKeyBoard(false);
+                    });
                 }
             }
             else
@@ -124,7 +135,7 @@ namespace SecretWordGameClient
         {
             if (serverDisconnected)
             {
-                MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended", MessageBoxButtons.OK);
             }
             else
             {
@@ -135,7 +146,7 @@ namespace SecretWordGameClient
                 }
                 else
                 {
-                    MessageBox.Show($"Server: {serverResult}<==> Client: {clientResult}", "Game Ended", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Server: {serverResult} \n\t Client: {clientResult}", "Game Ended", MessageBoxButtons.OK);
 
                     network.Disconnected -= NetworkDisconnected;
                     network.ServerPressedLetter -= NetworkServerPressedLetter;
@@ -159,9 +170,9 @@ namespace SecretWordGameClient
             {
                 if (CheckFinshed())
                 {
-                    // client win show result and wait new word
                     ++clientResult;
-                    //MessageBox.Show("Client win", "Client");
+                    progressBar1.Visible = true;
+                    EnableKeyBoard(false);
                 }
             }
             else
@@ -208,6 +219,16 @@ namespace SecretWordGameClient
             }
 
             return finished;
+        }
+
+        private void GamePlay_Load(object sender, EventArgs e)
+        {
+            Application.OpenForms["Form1"].Hide();
+        }
+
+        private void GamePlay_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.OpenForms["Form1"].Show();
         }
 
         private void EnableKeyBoard(bool enable)

@@ -22,11 +22,6 @@ namespace SecretWordGameClient
         public Form1()
         {
             InitializeComponent();
-
-            network = new ClientNetworkServices();
-            network.Connected += Network_Connected;
-            network.Disconnected += Network_Disconnected;
-            network.GameStarted += Network_GameStarted;
         }
 
         private void Network_GameStarted(object sender, EventArgs e)
@@ -69,6 +64,11 @@ namespace SecretWordGameClient
             var result = IPAddress.TryParse(txtIp.Text, out IPAddress ip);
             if (result == true)
             {
+                network = new ClientNetworkServices();
+                network.Connected += Network_Connected;
+                network.Disconnected += Network_Disconnected;
+                network.GameStarted += Network_GameStarted;
+
                 int port = 2000;
                 network.Start(ip, port);
             }
@@ -85,8 +85,11 @@ namespace SecretWordGameClient
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            network.Disconnected -= Network_Disconnected;
-            network.Stop();
+            if (network != null)
+            {
+                //network.Disconnected -= Network_Disconnected;
+                network.Stop();
+            }
         }
     }
 }
