@@ -37,7 +37,11 @@ namespace SecretWordGame
             this.tsslCategory = new System.Windows.Forms.ToolStripStatusLabel();
             this.btnStop = new System.Windows.Forms.Button();
             this.cbIp = new System.Windows.Forms.ComboBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.scoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnExit
@@ -129,6 +133,35 @@ namespace SecretWordGame
             this.cbIp.Size = new System.Drawing.Size(140, 28);
             this.cbIp.TabIndex = 6;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.scoreToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(982, 30);
+            this.menuStrip1.TabIndex = 7;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // scoreToolStripMenuItem
+            // 
+            this.scoreToolStripMenuItem.Name = "scoreToolStripMenuItem";
+            this.scoreToolStripMenuItem.Size = new System.Drawing.Size(60, 26);
+            this.scoreToolStripMenuItem.Text = "&Score";
+            this.scoreToolStripMenuItem.Click += new System.EventHandler(this.ScoreToolStripMenuItemClick);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(231, 85);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(125, 29);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Choose IP";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -136,11 +169,14 @@ namespace SecretWordGame
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(982, 553);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.cbIp);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.btnStart);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Secret Word Server";
@@ -148,6 +184,8 @@ namespace SecretWordGame
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1FormClosing);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -161,6 +199,9 @@ namespace SecretWordGame
         private System.Windows.Forms.ToolStripStatusLabel tsslCategory;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.ComboBox cbIp;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem scoreToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
     }
 }
 

@@ -1,0 +1,5 @@
+E:\iti\C#\Project\projectCode\SecretWordGame\SecretWordGame\projectCode\Business\bin\Debug\Business.dll
+E:\iti\C#\Project\projectCode\SecretWordGame\SecretWordGame\projectCode\Business\bin\Debug\Business.pdb
+E:\iti\C#\Project\projectCode\SecretWordGame\SecretWordGame\projectCode\Business\obj\Debug\Business.csproj.CoreCompileInputs.cache
+E:\iti\C#\Project\projectCode\SecretWordGame\SecretWordGame\projectCode\Business\obj\Debug\Business.dll
+E:\iti\C#\Project\projectCode\SecretWordGame\SecretWordGame\projectCode\Business\obj\Debug\Business.pdb

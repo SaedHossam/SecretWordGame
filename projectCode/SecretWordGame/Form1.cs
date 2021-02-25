@@ -140,5 +140,11 @@ namespace SecretWordGame
                 network.Stop();
             }
         }
+
+        private void ScoreToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            var form = new Score();
+            form.ShowDialog();
+        }
     }
 }
