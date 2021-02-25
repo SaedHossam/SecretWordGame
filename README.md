@@ -28,7 +28,7 @@ And if any of them closed the game the game will be finished
 
 ## Planning
 ### Server
-![serever](./Resources/01.png)
+![server](./Resources/01.PNG)
 
 ### Client
 ![serever](./Resources/02.png)
